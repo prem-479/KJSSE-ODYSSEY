@@ -12,7 +12,8 @@ export default function GlobalSpaceBackground() {
         let camera: import("three").PerspectiveCamera | null = null;
         let starField: import("three").Points | null = null;
         let dustField: import("three").Points | null = null;
-        let nebulaParticles: import("three").Points | null = null;
+        let nebulaGroup: import("three").Group | null = null;
+        let nebulaCloudsData: { sprite: import("three").Sprite, rotSpeed: number }[] = [];
 
         async function init() {
             if (!canvasRef.current) return;
@@ -115,54 +116,85 @@ export default function GlobalSpaceBackground() {
             dustField = new THREE.Points(dustGeo, dustMat);
             scene.add(dustField);
 
-            // ─── Nebula ───────────────────────────────────────────────
-            const NEBULA_COUNT = 2000;
-            const nebPos = new Float32Array(NEBULA_COUNT * 3);
-            const nebCol = new Float32Array(NEBULA_COUNT * 3);
-            const nebSize = new Float32Array(NEBULA_COUNT);
-            const nebHues = [[0.2, 0.05, 0.6], [0.0, 0.15, 0.5], [0.5, 0.0, 0.3]];
-            for (let i = 0; i < NEBULA_COUNT; i++) {
-                const hue = nebHues[Math.floor(Math.random() * nebHues.length)];
+            // ─── Hyperrealistic Nebula ──────────────────────────────────────────────
+            const generateNebulaTexture = () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = 512;
+                canvas.height = 512;
+                const ctx = canvas.getContext("2d")!;
+
+                const gradient = ctx.createRadialGradient(256, 256, 0, 256, 256, 256);
+                gradient.addColorStop(0, "rgba(255,255,255,1)");
+                gradient.addColorStop(0.2, "rgba(255,255,255,0.8)");
+                gradient.addColorStop(0.5, "rgba(255,255,255,0.2)");
+                gradient.addColorStop(1, "rgba(0,0,0,0)");
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 512, 512);
+
+                const imgData = ctx.getImageData(0, 0, 512, 512);
+                const data = imgData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    const noise = (Math.random() - 0.5) * 50;
+                    const a = data[i + 3];
+                    if (a > 0) {
+                        data[i] = Math.max(0, Math.min(255, data[i] + noise));
+                        data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + noise));
+                        data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + noise));
+                    }
+                }
+                ctx.putImageData(imgData, 0, 0);
+
+                return new THREE!.CanvasTexture(canvas);
+            };
+
+            const nebulaTexture = generateNebulaTexture();
+            nebulaGroup = new THREE!.Group();
+            scene.add(nebulaGroup);
+
+            const NEBULA_CLOUD_COUNT = 80; // Fewer clouds for realism
+            const nebHues = [
+                new THREE!.Color(0x0a1128), // Very dark blue
+                new THREE!.Color(0x1a0b2e), // Very dark purple
+                new THREE!.Color(0x081c15), // Very dark teal
+                new THREE!.Color(0x14213d), // Deep navy
+                new THREE!.Color(0x000814)  // Almost black blue
+            ];
+
+            for (let i = 0; i < NEBULA_CLOUD_COUNT; i++) {
+                const cloudMaterial = new THREE!.SpriteMaterial({
+                    map: nebulaTexture,
+                    color: nebHues[Math.floor(Math.random() * nebHues.length)],
+                    transparent: true,
+                    opacity: 0.03 + Math.random() * 0.06, // Much lower opacity
+                    blending: THREE!.AdditiveBlending,
+                    depthWrite: false
+                });
+
+                const sprite = new THREE!.Sprite(cloudMaterial);
+
                 const clusterAngle = Math.random() * Math.PI * 2;
-                const clusterRadius = 200 + Math.random() * 500;
-                const spread = 80 + Math.random() * 200;
-                nebPos[i * 3 + 0] = Math.cos(clusterAngle) * clusterRadius + (Math.random() - 0.5) * spread;
-                nebPos[i * 3 + 1] = (Math.random() - 0.5) * 200;
-                nebPos[i * 3 + 2] = Math.sin(clusterAngle) * clusterRadius + (Math.random() - 0.5) * spread;
-                nebCol[i * 3 + 0] = hue[0] + Math.random() * 0.2;
-                nebCol[i * 3 + 1] = hue[1] + Math.random() * 0.1;
-                nebCol[i * 3 + 2] = hue[2] + Math.random() * 0.3;
-                nebSize[i] = 10 + Math.random() * 60;
+                const clusterRadius = 400 + Math.random() * 1000;
+                const spread = 300 + Math.random() * 500;
+
+                sprite.position.set(
+                    Math.cos(clusterAngle) * clusterRadius + (Math.random() - 0.5) * spread,
+                    (Math.random() - 0.5) * 600,
+                    Math.sin(clusterAngle) * clusterRadius + (Math.random() - 0.5) * spread
+                );
+
+                const scale = 500 + Math.random() * 1000;
+                sprite.scale.set(scale, scale, 1);
+
+                cloudMaterial.rotation = Math.random() * Math.PI * 2;
+
+                nebulaCloudsData.push({
+                    sprite,
+                    rotSpeed: (Math.random() - 0.5) * 0.001
+                });
+
+                nebulaGroup.add(sprite);
             }
-            const nebGeo = new THREE.BufferGeometry();
-            nebGeo.setAttribute("position", new THREE.BufferAttribute(nebPos, 3));
-            nebGeo.setAttribute("color", new THREE.BufferAttribute(nebCol, 3));
-            nebGeo.setAttribute("size", new THREE.BufferAttribute(nebSize, 1));
-            const nebMat = new THREE.ShaderMaterial({
-                vertexColors: true, transparent: true, depthWrite: false,
-                blending: THREE.AdditiveBlending,
-                vertexShader: `
-                    attribute float size;
-                    varying vec3 vColor;
-                    void main() {
-                        vColor = color;
-                        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                        gl_PointSize = size * (200.0 / -mvPosition.z);
-                        gl_Position = projectionMatrix * mvPosition;
-                    }
-                `,
-                fragmentShader: `
-                    varying vec3 vColor;
-                    void main() {
-                        float d = length(gl_PointCoord - vec2(0.5));
-                        if (d > 0.5) discard;
-                        float alpha = 0.08 * (1.0 - smoothstep(0.0, 0.5, d));
-                        gl_FragColor = vec4(vColor, alpha);
-                    }
-                `
-            });
-            nebulaParticles = new THREE.Points(nebGeo, nebMat);
-            scene.add(nebulaParticles);
 
             // ─── Shooting Stars ──────────────────────────────────────
             class ShootingStar {
@@ -237,8 +269,8 @@ export default function GlobalSpaceBackground() {
                 animFrameId = requestAnimationFrame(animate);
                 t += 0.0004;
 
-                // Randomly launch a shooting star (infrequent: ~1 per 10-20 seconds on average)
-                if (Math.random() < 0.0008) {
+                // Randomly launch a shooting star (infrequent: ~1 per 3-5 seconds on average)
+                if (Math.random() < 0.005) {
                     const inactive = shootingStarsPool.find(s => !s.active);
                     if (inactive) inactive.launch();
                 }
@@ -253,7 +285,13 @@ export default function GlobalSpaceBackground() {
                     starField.rotation.y = t * 0.015;
                 }
                 if (dustField) dustField.rotation.y = t * 0.008;
-                if (nebulaParticles) nebulaParticles.rotation.y = t * 0.005;
+                if (nebulaGroup) {
+                    nebulaGroup.rotation.y = t * 0.003;
+                    nebulaGroup.rotation.z = Math.sin(t * 0.5) * 0.1;
+                    nebulaCloudsData.forEach(cloud => {
+                        cloud.sprite.material.rotation += cloud.rotSpeed;
+                    });
+                }
                 renderer!.render(scene!, camera!);
             }
             animate();

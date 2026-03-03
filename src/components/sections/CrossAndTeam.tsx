@@ -51,26 +51,26 @@ export default function CrossAndTeam() {
         <>
             <style>{`
         /* Cross-functional */
-        #s5 { background: var(--paper); color: #111; position: relative; z-index: 2; }
+        #s5 { background: transparent; color: var(--fg); position: relative; z-index: 2; }
         .wh-hdr { max-width: 1300px; margin: 0 auto; padding: 80px 5vw 52px; display: grid; grid-template-columns: 1fr 1.8fr; gap: 60px; align-items: end; }
-        .wh-chap { font-family: 'Bebas Neue', sans-serif; font-size: clamp(80px,14vw,160px); color: rgba(0,0,0,.06); line-height: 1; margin-bottom: -16px; }
-        .wh-tag { font-family: 'Barlow Condensed', var(--font-barlow), sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: rgba(0,0,0,.35); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-        .wh-tag::before { content: ''; width: 18px; height: 1px; background: rgba(0,0,0,.25); }
-        .wh-h { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px,5.5vw,68px); line-height: .95; letter-spacing: .5px; color: #111; }
+        .wh-chap { font-family: 'Bebas Neue', sans-serif; font-size: clamp(80px,14vw,160px); color: rgba(255,255,255,.03); line-height: 1; margin-bottom: -16px; }
+        .wh-tag { font-family: 'Barlow Condensed', var(--font-barlow), sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .wh-tag::before { content: ''; width: 18px; height: 1px; background: var(--gold); opacity: 0.4; }
+        .wh-h { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px,5.5vw,68px); line-height: .95; letter-spacing: .5px; color: #fff; }
         .wh-h em { color: var(--gold); font-style: normal; }
-        .wh-p { font-size: 14px; line-height: 1.85; color: rgba(0,0,0,.5); font-weight: 300; max-width: 480px; }
-        .cross-grid { max-width: 1300px; margin: 0 auto; padding: 0 5vw 80px; display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(0,0,0,.08); border: 1px solid rgba(0,0,0,.08); border-radius: 8px; overflow: hidden; }
-        .cr { background: var(--paper); padding: 32px 26px; transition: background .25s; position: relative; overflow: hidden; }
+        .wh-p { font-size: 14px; line-height: 1.85; color: var(--fg2); font-weight: 300; max-width: 480px; }
+        .cross-grid { max-width: 1300px; margin: 0 auto; padding: 0 5vw 80px; display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; border: none; overflow: hidden; }
+        .cr { background: rgba(255,255,255,.02); border: 1px solid var(--line); border-radius: 6px; padding: 32px 26px; transition: background .25s, border-color .25s; position: relative; overflow: hidden; }
         .cr::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,var(--gold),transparent); transform: scaleX(0); transform-origin: left; transition: transform .4s var(--ease); }
-        .cr:hover { background: var(--paper2); }
+        .cr:hover { background: rgba(255,255,255,.04); border-color: rgba(212,168,67,0.3); }
         .cr:hover::after { transform: scaleX(1); }
         .cr-i { font-size: 26px; margin-bottom: 14px; }
-        .cr-t { font-family: 'Barlow Condensed', var(--font-barlow), sans-serif; font-size: 17px; font-weight: 600; letter-spacing: .5px; color: #111; margin-bottom: 6px; }
-        .cr-b { display: inline-block; font-family: 'Barlow Condensed', var(--font-barlow), sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(0,0,0,.4); background: rgba(0,0,0,.06); border: 1px solid rgba(0,0,0,.1); padding: 3px 10px; border-radius: 100px; margin-bottom: 12px; }
-        .cr-d { font-size: 13px; color: rgba(0,0,0,.5); line-height: 1.7; font-weight: 300; }
+        .cr-t { font-family: 'Barlow Condensed', var(--font-barlow), sans-serif; font-size: 17px; font-weight: 600; letter-spacing: .5px; color: #fff; margin-bottom: 6px; }
+        .cr-b { display: inline-block; font-family: 'Barlow Condensed', var(--font-barlow), sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--fg3); background: rgba(255,255,255,.05); border: 1px solid var(--line); padding: 3px 10px; border-radius: 100px; margin-bottom: 12px; }
+        .cr-d { font-size: 13px; color: var(--fg2); line-height: 1.7; font-weight: 300; }
 
         /* Hierarchy */
-        #s6 { background: var(--ink2); border-top: 1px solid var(--line); padding: 90px 5vw; position: relative; z-index: 2; }
+        #s6 { background: transparent; border-top: 1px solid var(--line); padding: 90px 5vw; position: relative; z-index: 2; }
         .hier { margin-top: 48px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .hrow { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
         .hn { padding: 11px 17px; border-radius: 6px; border: 1px solid var(--line); background: rgba(255,255,255,.02); min-width: 136px; text-align: center; transition: border-color .2s, background .2s; }
