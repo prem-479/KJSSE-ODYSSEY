@@ -10,8 +10,7 @@ if (isGithubActions) {
 
 const nextConfig: NextConfig = {
   output: "export",
-  basePath: repo,
-  assetPrefix: repo,
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || "",
   images: {
     unoptimized: true,
   },
