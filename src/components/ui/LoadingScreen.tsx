@@ -390,7 +390,7 @@ export default function LoadingScreen() {
 
                     {/* Logo */}
                     <motion.img
-                        src="/logo-loader.png"
+                        src={getAssetPath("/logo-loader.png")}
                         alt="Team Odyssey"
                         initial={{ opacity: 0, scale: 0.92 }}
                         animate={{ opacity: 1, scale: 1 }}
