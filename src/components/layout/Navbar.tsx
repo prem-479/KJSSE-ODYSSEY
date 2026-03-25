@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getAssetPath } from "@/lib/utils";
 
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
@@ -36,7 +37,7 @@ export default function Navbar() {
             <Link href="/" style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                    src="/logo-main.png"
+                    src={getAssetPath("/logo-main.png")}
                     alt="Team Odyssey"
                     style={{ height: 32, width: "auto", mixBlendMode: "screen", filter: "brightness(2) contrast(1.1)" }}
                 />

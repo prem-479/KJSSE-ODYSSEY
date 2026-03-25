@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { getAssetPath } from "@/lib/utils";
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -177,14 +178,22 @@ export default function Hero() {
           <div id="hero-rim-glow" />
 
           <div id="planet-mars">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/800px-OSIRIS_Mars_true_color.jpg" alt="Mars" crossOrigin="anonymous" />
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/800px-OSIRIS_Mars_true_color.jpg" 
+              alt="Mars" 
+              crossOrigin="anonymous" 
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.parentElement!.style.background = 'radial-gradient(circle at 30% 30%, #ff4d00, #802600)';
+              }}
+            />
           </div>
 
           <div id="hero-overlay" />
 
           <div id="h-title" ref={titlePanelRef}>
             <div className="hero-logo-wrap" id="hero-logo-wrap">
-              <img className="hero-logo-img" src="/logo-badge.jpg" alt="Odyssey Mission Patch" />
+              <img className="hero-logo-img" src={getAssetPath("/logo-badge.jpg")} alt="Odyssey Mission Patch" />
             </div>
             <div id="h-eyebrow">
               <span className="h-eyebrow-line" />

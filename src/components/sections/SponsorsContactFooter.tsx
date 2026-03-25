@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { getAssetPath } from "@/lib/utils";
 
 const tiers = [
     { medal: "🥉", name: "Bronze", price: "₹25K", popular: false, golden: false, items: ["Logo on team t-shirts", "3 social media mentions", "Competition acknowledgment", "Certificate of sponsorship"] },
@@ -211,9 +212,9 @@ export default function SponsorsContactFooter() {
 
                         <div style={{ display: "flex", gap: 24, marginTop: 32, alignItems: "center", opacity: 0.5 }}>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src="/logo-kjsse.png" alt="Somaiya University" style={{ height: 36, width: "auto", filter: "grayscale(1) brightness(2)" }} />
+                            <img src={getAssetPath("/logo-kjsse.png")} alt="Somaiya University" style={{ height: 36, width: "auto", filter: "grayscale(1) brightness(2)" }} />
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src="/logo-trust.png" alt="Somaiya Trust" style={{ height: 36, width: "auto", filter: "grayscale(1) brightness(2)" }} />
+                            <img src={getAssetPath("/logo-trust.png")} alt="Somaiya Trust" style={{ height: 36, width: "auto", filter: "grayscale(1) brightness(2)" }} />
                         </div>
 
                         <div className="ft-socs">

@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { getAssetPath } from "@/lib/utils";
 
 export default function LoadingScreen() {
     const [progress, setProgress] = useState(0);
